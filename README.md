@@ -4,6 +4,9 @@ Modern HR console with employee self-service, communications, attendance, payrol
 
 ![January UI](images/image.png)
 
+## SNOTTER BHAI'S API KEY!!!!!
+AIzaSyBNr5Edmz0j1-1zt32jRG5OFtGwNiI7NKk
+
 ## Features
 - Dashboard with people, payroll, projects, attendance stats, and recent time off.
 - ESS portal with directory, announcements, onboarding tasks, and recognitions.
@@ -71,6 +74,3 @@ Modern HR console with employee self-service, communications, attendance, payrol
 ## Resetting data
 - Delete `hr.db` in the project root, then rerun `flask --app app init-db` and `flask --app app seed`.
 
-## Notes
-- Keep secrets in `.env`; avoid committing real keys.
-- For production, move to a real database and add a WSGI server (gunicorn/uwsgi) plus HTTPS and stronger auth/RBAC.
