@@ -3,5 +3,4 @@ __pycache__/
 instance/
 hr.db
 .env
-venv/
 .env.local
