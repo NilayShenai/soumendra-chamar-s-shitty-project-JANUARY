@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card narrow">
+  <h1>Sign in</h1>
+  <form method="post" class="stack">
+    <label>Email
+      <input name="email" type="email" placeholder="admin@local" required>
+    </label>
+    <label>Password
+      <input name="password" type="password" placeholder="admin123" required>
+    </label>
+    <button type="submit">Log in</button>
+  </form>
+  <p class="muted">Use admin@local / admin123 after running the seed command.</p>
+</section>
+{% endblock %}

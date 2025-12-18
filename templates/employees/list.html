@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>People</h1>
+    <a class="button" href="{{ url_for('main.new_employee') }}">Add employee</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Department</th>
+        <th>Email</th>
+        <th>Start</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for emp in employees %}
+      <tr>
+        <td>{{ emp.full_name() }}</td>
+        <td>{{ emp.role.title if emp.role else '—' }}</td>
+        <td>{{ emp.department.name if emp.department else '—' }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.start_date }}</td>
+        <td><span class="pill {{ emp.status }}">{{ emp.status }}</span></td>
+        <td class="actions">
+          <a href="{{ url_for('main.edit_employee', employee_id=emp.id) }}">Edit</a>
+          <form action="{{ url_for('main.delete_employee', employee_id=emp.id) }}" method="post" onsubmit="return confirm('Delete this employee?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="muted">No employees yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <h3>Add department</h3>
+    <form class="stack" action="{{ url_for('main.create_department') }}" method="post">
+      <label>Name
+        <input name="name" required>
+      </label>
+      <label>Location
+        <input name="location">
+      </label>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+  <div class="card">
+    <h3>Add role</h3>
+    <form class="stack" action="{{ url_for('main.create_role') }}" method="post">
+      <label>Title
+        <input name="title" required>
+      </label>
+      <label>Level
+        <input name="level" placeholder="IC3, M2, etc.">
+      </label>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

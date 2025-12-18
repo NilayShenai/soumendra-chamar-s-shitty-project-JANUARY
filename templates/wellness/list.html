@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Wellness & Recognition</h1>
+    <form class="actions" method="post">
+      <label style="min-width:180px;">Employee
+        <select name="employee_id" required>
+          {% for emp in employees %}
+          <option value="{{ emp.id }}">{{ emp.full_name() }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Badge
+        <input name="badge" placeholder="Kudos / Thank you">
+      </label>
+      <label>From
+        <input name="from_person" placeholder="You">
+      </label>
+      <label>Message
+        <input name="message" required>
+      </label>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <div class="stack">
+    {% for r in recognitions %}
+    <div class="feature">
+      <div>
+        <div class="feature-name">{{ r.employee.full_name() }}{% if r.badge %} — {{ r.badge }}{% endif %}</div>
+        <div class="muted">{{ r.from_person or 'Anonymous' }} • {{ r.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+        <p class="muted">{{ r.message }}</p>
+      </div>
+      <form action="{{ url_for('main.wellness_delete', rec_id=r.id) }}" method="post" onsubmit="return confirm('Remove recognition?');">
+        <button type="submit" class="link-muted">Delete</button>
+      </form>
+    </div>
+    {% else %}
+    <p class="muted">No recognitions yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

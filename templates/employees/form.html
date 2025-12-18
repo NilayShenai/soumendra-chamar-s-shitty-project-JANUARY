@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card narrow">
+  <h1>{{ 'Edit employee' if employee else 'Add employee' }}</h1>
+  <form class="stack" method="post">
+    <div class="grid two">
+      <label>First name
+        <input name="first_name" value="{{ employee.first_name if employee else '' }}" required>
+      </label>
+      <label>Last name
+        <input name="last_name" value="{{ employee.last_name if employee else '' }}" required>
+      </label>
+    </div>
+    <label>Email
+      <input type="email" name="email" value="{{ employee.email if employee else '' }}" required>
+    </label>
+    <label>Phone
+      <input name="phone" value="{{ employee.phone if employee else '' }}">
+    </label>
+    <label>Start date
+      <input type="date" name="start_date" value="{{ employee.start_date if employee else '' }}" required>
+    </label>
+    <div class="grid two">
+      <label>Department
+        <select name="department_id">
+          <option value="">--</option>
+          {% for dept in departments %}
+          <option value="{{ dept.id }}" {% if employee and employee.department_id == dept.id %}selected{% endif %}>{{ dept.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Role
+        <select name="role_id">
+          <option value="">--</option>
+          {% for role in roles %}
+          <option value="{{ role.id }}" {% if employee and employee.role_id == role.id %}selected{% endif %}>{{ role.title }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+    <label>Manager
+      <select name="manager_id">
+        <option value="">--</option>
+        {% for mgr in managers %}
+        <option value="{{ mgr.id }}" {% if employee and employee.manager_id == mgr.id %}selected{% endif %}>{{ mgr.full_name() }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    {% if employee %}
+    <label>Status
+      <select name="status">
+        {% for status in ['active','on-leave','terminated'] %}
+        <option value="{{ status }}" {% if employee.status == status %}selected{% endif %}>{{ status }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    {% endif %}
+    <div class="actions">
+      <a class="link-muted" href="{{ url_for('main.employees') }}">Cancel</a>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

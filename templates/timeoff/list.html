@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Time off</h1>
+    <a class="button" href="{{ url_for('main.time_off_new') }}">New request</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Dates</th>
+        <th>Category</th>
+        <th>Note</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in requests %}
+      <tr>
+        <td>{{ req.employee.full_name() }}</td>
+        <td>{{ req.start_date }} → {{ req.end_date }}</td>
+        <td>{{ req.category }}</td>
+        <td>{{ req.note or '—' }}</td>
+        <td>
+          <form method="post" action="{{ url_for('main.time_off_status', request_id=req.id) }}">
+            <select name="status" onchange="this.form.submit()">
+              {% for status in ['pending','approved','declined'] %}
+              <option value="{{ status }}" {% if req.status == status %}selected{% endif %}>{{ status }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="muted">No requests yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

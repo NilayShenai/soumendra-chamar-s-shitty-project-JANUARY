@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Attendance</h1>
+    <div class="actions">
+      <form class="inline" method="get">
+        <input type="date" name="date" value="{{ filter_date or '' }}">
+        <button class="ghost" type="submit">Filter</button>
+      </form>
+      <a class="button primary" href="{{ url_for('main.attendance_new') }}">Log attendance</a>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Date</th>
+        <th>Check in</th>
+        <th>Check out</th>
+        <th>Status</th>
+        <th>Hours</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log.employee.full_name() }}</td>
+        <td>{{ log.work_date }}</td>
+        <td>{{ log.check_in or '—' }}</td>
+        <td>{{ log.check_out or '—' }}</td>
+        <td><span class="pill {{ log.status }}">{{ log.status }}</span></td>
+        <td>{{ '%.2f'|format(log.hours) if log.hours is not none else '—' }}</td>
+        <td>{{ log.notes or '—' }}</td>
+        <td class="actions">
+          <a href="{{ url_for('main.attendance_edit', log_id=log.id) }}">Edit</a>
+          <form action="{{ url_for('main.attendance_delete', log_id=log.id) }}" method="post" onsubmit="return confirm('Delete attendance entry?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="muted">No attendance records yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

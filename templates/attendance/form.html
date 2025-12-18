@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card narrow">
+  <h1>{{ 'Edit attendance' if entry else 'Log attendance' }}</h1>
+  <form class="stack" method="post">
+    <label>Employee
+      <select name="employee_id" required>
+        {% for emp in employees %}
+        <option value="{{ emp.id }}" {% if entry and entry.employee_id == emp.id %}selected{% endif %}>{{ emp.full_name() }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Work date
+      <input type="date" name="work_date" value="{{ entry.work_date if entry else '' }}" required>
+    </label>
+    <div class="grid two">
+      <label>Check in
+        <input type="time" name="check_in" value="{{ entry.check_in if entry and entry.check_in else '' }}">
+      </label>
+      <label>Check out
+        <input type="time" name="check_out" value="{{ entry.check_out if entry and entry.check_out else '' }}">
+      </label>
+    </div>
+    <label>Status
+      <select name="status">
+        {% for s in ['present','remote','absent','leave'] %}
+        <option value="{{ s }}" {% if entry and entry.status == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Notes
+      <textarea name="notes" rows="3">{{ entry.notes if entry else '' }}</textarea>
+    </label>
+    <div class="actions">
+      <a class="link-muted" href="{{ url_for('main.attendance_list') }}">Cancel</a>
+      <button type="submit">Save</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

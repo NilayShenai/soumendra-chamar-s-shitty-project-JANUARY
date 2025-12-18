@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card narrow">
+  <h1>New time off</h1>
+  <form class="stack" method="post">
+    <label>Employee
+      <select name="employee_id" required>
+        {% for emp in employees %}
+        <option value="{{ emp.id }}">{{ emp.full_name() }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <div class="grid two">
+      <label>Start date
+        <input type="date" name="start_date" required>
+      </label>
+      <label>End date
+        <input type="date" name="end_date" required>
+      </label>
+    </div>
+    <label>Category
+      <select name="category">
+        <option value="pto">PTO</option>
+        <option value="sick">Sick</option>
+        <option value="unpaid">Unpaid</option>
+      </select>
+    </label>
+    <label>Note
+      <textarea name="note" rows="3" placeholder="Optional context"></textarea>
+    </label>
+    <div class="actions">
+      <a class="link-muted" href="{{ url_for('main.time_off_list') }}">Cancel</a>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

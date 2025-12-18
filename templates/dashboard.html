@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">January platform</p>
+    <h1>One place to run your workforce</h1>
+    <p class="lede">A focused console to manage people, payroll, and time off, without tabs, chaos, or distractions.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="{{ url_for('main.employees') }}">Open directory</a>
+      <a class="button ghost" href="{{ url_for('main.time_off_list') }}">Review time off</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid stats">
+  <div class="stat">
+    <p class="label">Employees</p>
+    <p class="value">{{ employee_count }}</p>
+  </div>
+  <div class="stat">
+    <p class="label">Departments</p>
+    <p class="value">{{ department_count }}</p>
+  </div>
+  <div class="stat">
+    <p class="label">Pending Time Off</p>
+    <p class="value">{{ pending_requests }}</p>
+  </div>
+  <div class="stat">
+    <p class="label">Open payroll runs</p>
+    <p class="value">{{ open_payroll }}</p>
+  </div>
+  <div class="stat">
+    <p class="label">Active projects</p>
+    <p class="value">{{ active_projects }}</p>
+  </div>
+  <div class="stat">
+    <p class="label">Today's check-ins</p>
+    <p class="value">{{ todays_logs }}</p>
+  </div>
+</section>
+
+<section class="card">
+  <div class="card-head">
+    <h2>Recent time off</h2>
+    <a class="link" href="{{ url_for('main.time_off_list') }}">View all</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Dates</th>
+        <th>Category</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in recent_requests %}
+      <tr>
+        <td>{{ req.employee.full_name() }}</td>
+        <td>{{ req.start_date }} → {{ req.end_date }}</td>
+        <td>{{ req.category }}</td>
+        <td><span class="pill {{ req.status }}">{{ req.status }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="4" class="muted">No requests yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <div class="card-head">
+      <h3>Payroll</h3>
+      <a class="link" href="{{ url_for('main.payroll_list') }}">View</a>
+    </div>
+    <p class="muted">Schedule, approve, and review payments.</p>
+    <a class="button ghost" href="{{ url_for('main.payroll_new') }}">Run payroll</a>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <h3>Projects</h3>
+      <a class="link" href="{{ url_for('main.projects') }}">View</a>
+    </div>
+    <p class="muted">Keep workstreams staffed and on-track.</p>
+    <a class="button ghost" href="{{ url_for('main.projects') }}">Manage projects</a>
+  </div>
+</section>
+{% endblock %}

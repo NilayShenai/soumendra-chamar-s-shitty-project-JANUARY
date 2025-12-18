@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "flask seed",
+			"type": "shell",
+			"command": "C:/Users/nilay/OneDrive/Documents/repos/goon/.venv/Scripts/python.exe",
+			"args": [
+				"-m",
+				"flask",
+				"--app",
+				"app",
+				"seed"
+			],
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

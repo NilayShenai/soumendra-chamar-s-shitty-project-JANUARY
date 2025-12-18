@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Onboarding</h1>
+    <form class="actions" method="post">
+      <label style="min-width:180px;">Employee
+        <select name="employee_id" required>
+          {% for emp in employees %}
+          <option value="{{ emp.id }}">{{ emp.full_name() }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Title
+        <input name="title" required>
+      </label>
+      <label>Status
+        <select name="status">
+          {% for s in ['open','in-progress','blocked','done'] %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Due date
+        <input type="date" name="due_date">
+      </label>
+      <label>Notes
+        <input name="notes">
+      </label>
+      <button type="submit">Add</button>
+    </form>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Due</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in tasks %}
+      <tr>
+        <td>{{ t.employee.full_name() }}</td>
+        <td>{{ t.title }}</td>
+        <td>
+          <form class="inline" action="{{ url_for('main.onboarding_status', task_id=t.id) }}" method="post">
+            <select name="status" onchange="this.form.submit()">
+              {% for s in ['open','in-progress','blocked','done'] %}
+              <option value="{{ s }}" {% if t.status == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+        <td>{{ t.due_date or '—' }}</td>
+        <td class="muted">{{ t.notes or '—' }}</td>
+        <td class="actions">
+          <form action="{{ url_for('main.onboarding_delete', task_id=t.id) }}" method="post" onsubmit="return confirm('Delete task?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="muted">No onboarding tasks.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Performance reviews</h1>
+    <form class="actions" method="post">
+      <label style="min-width:180px;">Employee
+        <select name="employee_id" required>
+          {% for emp in employees %}
+          <option value="{{ emp.id }}">{{ emp.full_name() }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Period start
+        <input type="date" name="period_start" required>
+      </label>
+      <label>Period end
+        <input type="date" name="period_end" required>
+      </label>
+      <label>Rating
+        <input name="rating" placeholder="e.g., Exceeds">
+      </label>
+      <label>Status
+        <select name="status">
+          {% for s in ['draft','in-review','submitted'] %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Reviewer
+        <input name="reviewer" placeholder="Manager">
+      </label>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Period</th>
+        <th>Rating</th>
+        <th>Status</th>
+        <th>Reviewer</th>
+        <th>Summary</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in reviews %}
+      <tr>
+        <td>{{ r.employee.full_name() }}</td>
+        <td>{{ r.period_start }} → {{ r.period_end }}</td>
+        <td>{{ r.rating or '—' }}</td>
+        <td><span class="pill {{ r.status }}">{{ r.status }}</span></td>
+        <td>{{ r.reviewer or '—' }}</td>
+        <td class="muted">{{ (r.summary or '')[:80] }}</td>
+        <td class="actions">
+          <form action="{{ url_for('main.performance_delete', review_id=r.id) }}" method="post" onsubmit="return confirm('Delete review?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="muted">No reviews yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

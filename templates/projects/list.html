@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Projects</h1>
+    <p class="muted">Track work, owners, and staffing.</p>
+  </div>
+  <div class="grid two">
+    <form class="stack" action="{{ url_for('main.project_new') }}" method="post">
+      <h3>Create project</h3>
+      <label>Name
+        <input name="name" required>
+      </label>
+      <label>Description
+        <textarea name="description" rows="2"></textarea>
+      </label>
+      <div class="grid two">
+        <label>Status
+          <select name="status">
+            {% for status in ['planned','active','blocked','done'] %}
+            <option value="{{ status }}">{{ status }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>Start
+          <input type="date" name="start_date">
+        </label>
+      </div>
+      <label>Target end
+        <input type="date" name="end_date">
+      </label>
+      <button type="submit">Save project</button>
+    </form>
+
+    <div class="stack">
+      {% for project in projects %}
+      <div class="card" style="margin:0;">
+        <div class="card-head">
+          <div>
+            <h3 style="margin:0;">{{ project.name }}</h3>
+            <p class="muted">{{ project.status }}{% if project.start_date %} · {{ project.start_date }}{% endif %}{% if project.end_date %} → {{ project.end_date }}{% endif %}</p>
+          </div>
+          <form action="{{ url_for('main.project_delete', project_id=project.id) }}" method="post" onsubmit="return confirm('Delete project?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </div>
+        <p>{{ project.description or 'No description' }}</p>
+        <h4>Assignments</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Person</th>
+              <th>Role</th>
+              <th>Allocation%</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in project.assignments %}
+            <tr>
+              <td>{{ a.employee.full_name() }}</td>
+              <td>{{ a.role or '—' }}</td>
+              <td>{{ a.allocation or '—' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="muted">No assignments yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <form class="stack" action="{{ url_for('main.project_assign', project_id=project.id) }}" method="post">
+          <div class="grid two">
+            <label>Employee
+              <select name="employee_id" required>
+                {% for emp in employees %}
+                <option value="{{ emp.id }}">{{ emp.full_name() }}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <label>Role on project
+              <input name="role" placeholder="Lead, PM, IC">
+            </label>
+          </div>
+          <label>Allocation %
+            <input type="number" name="allocation" min="0" max="100" step="5">
+          </label>
+          <button type="submit">Add assignment</button>
+        </form>
+      </div>
+      {% else %}
+      <p class="muted">No projects yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

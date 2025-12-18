@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="grid two">
+  <div class="card">
+    <div class="card-head">
+      <h2>Announcements</h2>
+    </div>
+    <form class="stack" method="post">
+      <input type="hidden" name="kind" value="announcement">
+      <label>Title
+        <input name="title" required>
+      </label>
+      <label>Body
+        <textarea name="body" rows="3" required></textarea>
+      </label>
+      <label>Author
+        <input name="author" placeholder="Optional" value="{{ g.user.full_name if g.user else '' }}">
+      </label>
+      <button type="submit">Post</button>
+    </form>
+    <div class="stack" style="margin-top:16px;">
+      {% for ann in announcements %}
+      <div class="feature">
+        <div>
+          <div class="feature-name">{{ ann.title }}</div>
+          <div class="muted">{{ ann.author or 'System' }} • {{ ann.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <p class="muted">{{ ann.body }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No announcements yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Channel messages</h2>
+    </div>
+    <form class="stack" method="post">
+      <input type="hidden" name="kind" value="message">
+      <label>Channel
+        <input name="channel" placeholder="general">
+      </label>
+      <label>Message
+        <textarea name="body" rows="2" required></textarea>
+      </label>
+      <label>Author
+        <input name="author" placeholder="Optional" value="{{ g.user.full_name if g.user else '' }}">
+      </label>
+      <button type="submit">Send</button>
+    </form>
+    <div class="stack" style="margin-top:16px;">
+      {% for msg in messages %}
+      <div class="feature">
+        <div>
+          <div class="feature-name">#{{ msg.channel }}</div>
+          <div class="muted">{{ msg.author or 'System' }} • {{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <p class="muted">{{ msg.message }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No messages yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

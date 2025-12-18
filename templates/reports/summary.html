@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Reporting & Analytics</h1>
+    <a class="link" href="{{ url_for('main.system_health') }}" target="_blank">Health JSON</a>
+  </div>
+  <div class="grid stats">
+    <div class="stat"><p class="label">Employees</p><p class="value">{{ metrics.employee_total }}</p></div>
+    <div class="stat"><p class="label">Active</p><p class="value">{{ metrics.active_employees }}</p></div>
+    <div class="stat"><p class="label">On leave</p><p class="value">{{ metrics.on_leave }}</p></div>
+    <div class="stat"><p class="label">Pending PTO</p><p class="value">{{ metrics.pending_time_off }}</p></div>
+    <div class="stat"><p class="label">Payroll scheduled (₹)</p><p class="value">{{ '%.0f'|format(metrics.payroll_scheduled) }}</p></div>
+    <div class="stat"><p class="label">Payroll paid (₹)</p><p class="value">{{ '%.0f'|format(metrics.payroll_paid) }}</p></div>
+    <div class="stat"><p class="label">Attendance today</p><p class="value">{{ metrics.attendance_today }}</p></div>
+    <div class="stat"><p class="label">Onboarding open</p><p class="value">{{ metrics.open_onboarding }}</p></div>
+    <div class="stat"><p class="label">Reviews open</p><p class="value">{{ metrics.open_reviews }}</p></div>
+    <div class="stat"><p class="label">Recognitions (7d)</p><p class="value">{{ metrics.recognitions_7d }}</p></div>
+    <div class="stat"><p class="label">Active benefits</p><p class="value">{{ metrics.benefits_active }}</p></div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Payroll</h1>
+    <a class="button primary" href="{{ url_for('main.payroll_new') }}">Run payroll</a>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Period</th>
+        <th>Pay date</th>
+        <th>Status</th>
+        <th>Gross (₹)</th>
+        <th>Taxes (₹)</th>
+        <th>Bonus (₹)</th>
+        <th>Net (₹)</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in entries %}
+      <tr>
+        <td>{{ entry.employee.full_name() }}</td>
+        <td>{{ entry.period_start }} → {{ entry.period_end }}</td>
+        <td>{{ entry.pay_date }}</td>
+        <td><span class="pill {{ entry.status }}">{{ entry.status }}</span></td>
+        <td>₹{{ '%.2f'|format(entry.gross_pay) }}</td>
+        <td>₹{{ '%.2f'|format(entry.taxes) }}</td>
+        <td>₹{{ '%.2f'|format(entry.bonus) }}</td>
+        <td>₹{{ '%.2f'|format(entry.net_pay) }}</td>
+        <td class="actions">
+          <a href="{{ url_for('main.payroll_edit', entry_id=entry.id) }}">Edit</a>
+          <form action="{{ url_for('main.payroll_delete', entry_id=entry.id) }}" method="post" onsubmit="return confirm('Delete payroll entry?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9" class="muted">No payroll runs yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

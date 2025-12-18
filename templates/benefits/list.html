@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <div class="card-head">
+    <h1>Benefits</h1>
+    <form class="actions" method="post">
+      <label style="min-width:180px;">Employee
+        <select name="employee_id" required>
+          {% for emp in employees %}
+          <option value="{{ emp.id }}">{{ emp.full_name() }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Benefit type
+        <input name="benefit_type" placeholder="Health" required>
+      </label>
+      <label>Provider
+        <input name="provider" placeholder="Carrier">
+      </label>
+      <label>Coverage
+        <input name="coverage" placeholder="Gold / 80%">
+      </label>
+      <label>Status
+        <select name="status">
+          {% for s in ['active','pending','ended'] %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Start date
+        <input type="date" name="start_date">
+      </label>
+      <label>End date
+        <input type="date" name="end_date">
+      </label>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Employee</th>
+        <th>Benefit</th>
+        <th>Provider</th>
+        <th>Coverage</th>
+        <th>Status</th>
+        <th>Dates</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in enrollments %}
+      <tr>
+        <td>{{ b.employee.full_name() }}</td>
+        <td>{{ b.benefit_type }}</td>
+        <td>{{ b.provider or '—' }}</td>
+        <td>{{ b.coverage or '—' }}</td>
+        <td><span class="pill {{ b.status }}">{{ b.status }}</span></td>
+        <td>{{ b.start_date or '—' }} → {{ b.end_date or '—' }}</td>
+        <td class="actions">
+          <form action="{{ url_for('main.benefits_delete', enroll_id=b.id) }}" method="post" onsubmit="return confirm('Delete enrollment?');">
+            <button type="submit" class="link-muted">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7" class="muted">No enrollments yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

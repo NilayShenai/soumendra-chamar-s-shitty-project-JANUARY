@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or "January" }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">January</div>
+    {% if g.user %}
+    <nav>
+      <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.ess') }}">ESS</a>
+      <a href="{{ url_for('main.employees') }}">People</a>
+      <a href="{{ url_for('main.time_off_list') }}">Time Off</a>
+      <a href="{{ url_for('main.attendance_list') }}">Attendance</a>
+      <a href="{{ url_for('main.communications') }}">Comm</a>
+      <a href="{{ url_for('main.performance') }}">Performance</a>
+      <a href="{{ url_for('main.onboarding') }}">Onboarding</a>
+      <a href="{{ url_for('main.benefits') }}">Benefits</a>
+      <a href="{{ url_for('main.wellness') }}">Wellness</a>
+      <a href="{{ url_for('main.reports') }}">Reports</a>
+      <a href="{{ url_for('main.payroll_list') }}">Payroll</a>
+      <a href="{{ url_for('main.projects') }}">Projects</a>
+      <a href="{{ url_for('auth.logout') }}" class="link-muted">Logout</a>
+    </nav>
+    {% endif %}
+  </header>
+
+  <main class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash">
+          {% for category, message in messages %}
+            <div class="flash-item {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  {% if g.user %}
+  <div class="chat-launch" id="chat-toggle" title="Chat with January">?
+  </div>
+  <div class="chat-panel" id="chat-panel">
+    <div class="chat-head">
+      <div>
+        <p class="eyebrow">Assistant</p>
+        <strong>January Chat</strong>
+      </div>
+      <button class="close" type="button" id="chat-close">×</button>
+    </div>
+    <div class="chat-feed" id="chat-feed"></div>
+    <form class="chat-form" id="chat-form">
+      <input id="chat-input" name="message" placeholder="How may I help you?" autocomplete="off" required>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <script>
+    (() => {
+      const panel = document.getElementById('chat-panel');
+      const toggle = document.getElementById('chat-toggle');
+      const closeBtn = document.getElementById('chat-close');
+      const feed = document.getElementById('chat-feed');
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('chat-input');
+
+      const addMessage = (role, text) => {
+        const row = document.createElement('div');
+        row.className = `chat-row ${role}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.innerHTML = (text || '').replace(/</g, '&lt;').replace(/\n/g, '<br>');
+        row.appendChild(bubble);
+        feed.appendChild(row);
+        feed.scrollTop = feed.scrollHeight;
+      };
+
+      const setLoading = (loading) => {
+        form.querySelector('button').disabled = loading;
+        input.disabled = loading;
+      };
+
+      addMessage('bot', 'How may I help you?');
+
+      const openPanel = () => panel.classList.add('open');
+      const closePanel = () => panel.classList.remove('open');
+
+      toggle.addEventListener('click', openPanel);
+      closeBtn.addEventListener('click', closePanel);
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = (input.value || '').trim();
+        if (!text) return;
+        addMessage('user', text);
+        input.value = '';
+        setLoading(true);
+        try {
+          const res = await fetch("{{ url_for('main.chat_api') }}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+          });
+          const data = await res.json();
+          if (!res.ok || data.error) {
+            addMessage('bot', data.error || 'Something went wrong.');
+          } else {
+            addMessage('bot', data.reply || '');
+          }
+        } catch (err) {
+          addMessage('bot', 'Network error.');
+        } finally {
+          setLoading(false);
+          input.focus();
+        }
+      });
+    })();
+  </script>
+  {% endif %}
+</body>
+</html>

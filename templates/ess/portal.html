@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Employee Self-Service</p>
+    <h1>Self-service hub</h1>
+    <p class="lede">Quick access to people, time off, attendance, benefits, and recognitions.</p>
+    <div class="hero-actions">
+      <a class="button primary" href="{{ url_for('main.time_off_list') }}">Request time off</a>
+      <a class="button ghost" href="{{ url_for('main.attendance_list') }}">View attendance</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <div class="card-head"><h3>Directory</h3></div>
+    <div class="stack">
+      {% for emp in employees %}
+      <div class="feature">
+        <div>
+          <div class="feature-name">{{ emp.full_name() }}</div>
+          <div class="muted">{{ emp.email }} • {{ emp.status }}</div>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No employees yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>Announcements</h3></div>
+    <div class="stack">
+      {% for ann in announcements %}
+      <div class="feature">
+        <div>
+          <div class="feature-name">{{ ann.title }}</div>
+          <div class="muted">{{ ann.created_at.strftime('%Y-%m-%d') }}</div>
+          <p class="muted">{{ ann.body }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No announcements.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="grid two">
+  <div class="card">
+    <div class="card-head"><h3>Onboarding tasks</h3></div>
+    <div class="stack">
+      {% for t in tasks %}
+      <div class="feature">
+        <div>
+          <div class="feature-name">{{ t.title }}</div>
+          <div class="muted">{{ t.employee.full_name() }} • {{ t.status }} • {{ t.due_date or 'No due date' }}</div>
+          <p class="muted">{{ t.notes or '' }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No tasks.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-head"><h3>Recognitions</h3></div>
+    <div class="stack">
+      {% for r in recognitions %}
+      <div class="feature">
+        <div>
+          <div class="feature-name">{{ r.employee.full_name() }}{% if r.badge %} — {{ r.badge }}{% endif %}</div>
+          <div class="muted">{{ r.from_person or 'Anonymous' }} • {{ r.created_at.strftime('%Y-%m-%d') }}</div>
+          <p class="muted">{{ r.message }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted">No recognitions.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
